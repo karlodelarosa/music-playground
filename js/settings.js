@@ -49,6 +49,42 @@ const SoundSettings = (() => {
     if (label) label.textContent = preset.name.split(" ")[0];
   }
 
+  function buildCompatSection() {
+    const on = AudioEngine.getCompatMode();
+    return `<div class="sound-compat-block">
+      <label class="sound-compat-toggle">
+        <input type="checkbox" id="sound-compat-mode" ${on ? "checked" : ""}>
+        <span class="sound-compat-label">iPhone compatibility audio</span>
+      </label>
+      <p class="sound-compat-hint">Enable if other online pianos work on your phone but this app is silent. Uses the same style of audio as most web pianos.</p>
+    </div>`;
+  }
+
+  function wireCompatToggle() {
+    const panel = document.getElementById("sound-settings-panel");
+    if (!panel) return;
+    const cb = panel.querySelector("#sound-compat-mode");
+    if (!cb || cb.dataset.wired === "1") return;
+    cb.dataset.wired = "1";
+
+    const apply = (on) => {
+      AudioEngine.setCompatMode(on);
+      if (on) AudioEngine.enableCompatMode();
+      else {
+        AudioEngine.unlockAudio();
+        AudioEngine.playTone("E", 0.3);
+      }
+      panel.querySelectorAll(".sound-settings-group").forEach((g) => {
+        g.classList.toggle("sound-settings-dimmed", on);
+      });
+    };
+
+    cb.addEventListener("change", () => apply(cb.checked));
+    panel.querySelectorAll(".sound-settings-group").forEach((g) => {
+      g.classList.toggle("sound-settings-dimmed", cb.checked);
+    });
+  }
+
   function buildPanel() {
     const byCat = {};
     Instruments.list().forEach((p) => {
@@ -77,8 +113,9 @@ const SoundSettings = (() => {
     const body = panel.querySelector(".sound-settings-body");
     if (!body || body.dataset.built === "1") return;
 
-    body.innerHTML = buildPanel();
+    body.innerHTML = buildCompatSection() + buildPanel();
     body.dataset.built = "1";
+    wireCompatToggle();
     body.querySelectorAll(".sound-option").forEach((btn) => {
       AudioEngine.bindTap(btn, (e) => {
         e.stopPropagation();
@@ -147,6 +184,12 @@ const SoundSettings = (() => {
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && isOpen) close();
+    });
+
+    document.addEventListener("elgc-compat-audio-change", () => {
+      const cb = document.getElementById("sound-compat-mode");
+      if (cb) cb.checked = AudioEngine.getCompatMode();
+      wireCompatToggle();
     });
 
     setOpen(false);

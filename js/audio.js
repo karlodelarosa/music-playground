@@ -25,9 +25,31 @@ const AudioEngine = (() => {
 
   const MIN_GAIN = 0.0001;
 
+  const COMPAT_KEY = "elgc_compat_audio";
+
   let ctx = null;
   let instrumentId = "grand";
   let primed = false;
+
+  function useCompat() {
+    try {
+      return localStorage.getItem(COMPAT_KEY) === "1";
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function setCompatMode(on) {
+    try {
+      localStorage.setItem(COMPAT_KEY, on ? "1" : "0");
+    } catch (_) {}
+    if (on && typeof Html5Audio !== "undefined") Html5Audio.unlock();
+    document.dispatchEvent(new CustomEvent("elgc-compat-audio-change", { detail: !!on }));
+  }
+
+  function getCompatMode() {
+    return useCompat();
+  }
 
   function getContext() {
     if (!ctx) {
@@ -43,6 +65,11 @@ const AudioEngine = (() => {
 
   /** Must run synchronously inside touchstart/click — do not await resume(). */
   function unlockAudio() {
+    if (useCompat() && typeof Html5Audio !== "undefined") {
+      Html5Audio.unlock();
+      return true;
+    }
+
     const audio = getContext();
     if (!audio) return false;
 
@@ -91,6 +118,13 @@ const AudioEngine = (() => {
     const freq = NOTE_FREQ[noteId];
     if (!freq) return;
 
+    if (useCompat() && typeof Html5Audio !== "undefined") {
+      unlockAudio();
+      const minDur = Instruments.getMinDuration(instrumentId);
+      Html5Audio.playTone(noteId, NOTE_FREQ, Math.max(duration, minDur), when);
+      return;
+    }
+
     withAudio((audio) => {
       const t = audio.currentTime + when;
       const minDur = Instruments.getMinDuration(instrumentId);
@@ -101,6 +135,11 @@ const AudioEngine = (() => {
   }
 
   function playSuccess() {
+    if (useCompat() && typeof Html5Audio !== "undefined") {
+      unlockAudio();
+      Html5Audio.playSuccess();
+      return;
+    }
     withAudio((audio) => {
       const t = audio.currentTime;
       [523.25, 659.25, 783.99].forEach((freq, i) => {
@@ -121,6 +160,11 @@ const AudioEngine = (() => {
   }
 
   function playWrong() {
+    if (useCompat() && typeof Html5Audio !== "undefined") {
+      unlockAudio();
+      Html5Audio.playWrong();
+      return;
+    }
     withAudio((audio) => {
       const t = audio.currentTime;
       const osc = audio.createOscillator();
@@ -145,6 +189,11 @@ const AudioEngine = (() => {
   }
 
   function playClick(accent = false) {
+    if (useCompat() && typeof Html5Audio !== "undefined") {
+      unlockAudio();
+      Html5Audio.playClick(accent);
+      return;
+    }
     withAudio((audio) => {
       const t = audio.currentTime;
       const osc = audio.createOscillator();
@@ -212,66 +261,142 @@ const AudioEngine = (() => {
 
   function markMobileUnlocked() {
     try {
-      sessionStorage.setItem("elgc_audio_v2", "1");
+      sessionStorage.setItem("elgc_audio_v3", "1");
     } catch (_) {}
   }
 
-  /** Run action on touchstart (iOS) or click (desktop); avoids delayed click breaking audio. */
+  function enableCompatMode() {
+    setCompatMode(true);
+    if (typeof Html5Audio !== "undefined") Html5Audio.testNote(NOTE_FREQ);
+  }
+
+  const TAP_MOVE_PX = 12;
+
+  /**
+   * Fire on finger release (or mouse click), not touchstart — so scrolling still works.
+   * Audio unlock runs on touchstart; action runs on touchend when the finger didn't move much.
+   */
   function bindTap(el, fn) {
     if (!el || typeof fn !== "function") return;
+
+    let startX = 0;
+    let startY = 0;
+    let moved = false;
+    let touchHandled = false;
+
     el.addEventListener(
       "touchstart",
       (e) => {
-        e.preventDefault();
+        moved = false;
+        touchHandled = false;
+        const t = e.touches[0];
+        if (t) {
+          startX = t.clientX;
+          startY = t.clientY;
+        }
+        unlockAudio();
+      },
+      { passive: true }
+    );
+
+    el.addEventListener(
+      "touchmove",
+      (e) => {
+        const t = e.touches[0];
+        if (!t || moved) return;
+        if (
+          Math.abs(t.clientX - startX) > TAP_MOVE_PX ||
+          Math.abs(t.clientY - startY) > TAP_MOVE_PX
+        ) {
+          moved = true;
+        }
+      },
+      { passive: true }
+    );
+
+    el.addEventListener(
+      "touchend",
+      (e) => {
+        if (moved) return;
+        const t = e.changedTouches[0];
+        if (
+          t &&
+          (Math.abs(t.clientX - startX) > TAP_MOVE_PX ||
+            Math.abs(t.clientY - startY) > TAP_MOVE_PX)
+        ) {
+          return;
+        }
+        touchHandled = true;
         unlockAudio();
         fn(e);
+        window.setTimeout(() => {
+          touchHandled = false;
+        }, 450);
       },
-      { passive: false }
+      { passive: true }
     );
+
     el.addEventListener("click", (e) => {
+      if (touchHandled) return;
       unlockAudio();
       fn(e);
     });
   }
 
   function initMobileUnlockUI() {
+    if (useCompat()) return;
+
     let dismissed = false;
     try {
-      dismissed = sessionStorage.getItem("elgc_audio_v2") === "1";
+      dismissed = sessionStorage.getItem("elgc_audio_v3") === "1";
     } catch (_) {}
 
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     if (!coarse && navigator.maxTouchPoints < 1) return;
     if (dismissed) return;
 
+    const wrap = document.createElement("div");
+    wrap.className = "audio-unlock-wrap";
+    wrap.setAttribute("role", "group");
+    wrap.setAttribute("aria-label", "Enable sound");
+
     const banner = document.createElement("button");
     banner.type = "button";
     banner.className = "audio-unlock-banner";
-    banner.setAttribute("aria-label", "Enable sound");
     banner.innerHTML =
       '<span class="audio-unlock-icon" aria-hidden="true">🔊</span>' +
-      "<span class=\"audio-unlock-text\">Tap to enable sound</span>";
+      '<span class="audio-unlock-text">Tap to enable sound</span>';
+
+    const help = document.createElement("button");
+    help.type = "button";
+    help.className = "audio-unlock-help";
+    help.textContent = "No sound on this phone? Tap here";
 
     const enable = () => {
       unlockAudio();
       playTone("E", 0.3);
-      const audio = getContext();
-      if (audio && (audio.state === "running" || primed)) markMobileUnlocked();
-      banner.classList.add("audio-unlock-hide");
-      setTimeout(() => banner.remove(), 350);
+      markMobileUnlocked();
+      wrap.classList.add("audio-unlock-hide");
+      setTimeout(() => wrap.remove(), 350);
     };
 
-    banner.addEventListener(
-      "touchstart",
-      (e) => {
-        e.preventDefault();
-        enable();
-      },
-      { passive: false }
-    );
-    banner.addEventListener("click", enable);
+    const enableCompat = (e) => {
+      e.stopPropagation();
+      enableCompatMode();
+      help.textContent = "Compatibility mode on — try a note";
+      markMobileUnlocked();
+      setTimeout(() => {
+        wrap.classList.add("audio-unlock-hide");
+        setTimeout(() => wrap.remove(), 400);
+      }, 1200);
+    };
 
-    document.body.appendChild(banner);
+    bindTap(banner, enable);
+    bindTap(help, enableCompat);
+
+    wrap.appendChild(banner);
+    wrap.appendChild(help);
+    document.body.appendChild(wrap);
   }
 
   return {
@@ -291,6 +416,10 @@ const AudioEngine = (() => {
     unlockAudio,
     bindTap,
     isUnlocked,
+    useCompat,
+    getCompatMode,
+    setCompatMode,
+    enableCompatMode,
     initMobileUnlockUI,
     setInstrument,
     getInstrument,

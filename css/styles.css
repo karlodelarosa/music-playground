@@ -379,6 +379,7 @@ body.piano-hidden {
   border-radius: 14px;
   padding: 1.1rem 1rem;
   cursor: pointer;
+  touch-action: manipulation;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
   text-align: left;
   position: relative;
@@ -895,12 +896,43 @@ body.piano-hidden {
 .piano-key.black[data-note="As"] { left: 81%; }
 
 /* Mobile: explicit sound unlock (iOS requires gesture + sync Web Audio) */
-.audio-unlock-banner {
+.audio-unlock-wrap {
   position: fixed;
   left: 50%;
-  bottom: calc(var(--piano-offset, 0px) + 1.25rem);
+  bottom: calc(var(--piano-offset, 0px) + 1rem);
   transform: translateX(-50%);
   z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: calc(100vw - 2rem);
+}
+
+.audio-unlock-wrap.audio-unlock-hide {
+  opacity: 0;
+  transform: translateX(-50%) translateY(12px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+
+.audio-unlock-help {
+  border: none;
+  background: var(--bg-panel);
+  color: var(--accent-strong);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.audio-unlock-banner {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -918,13 +950,6 @@ body.piano-hidden {
   -webkit-tap-highlight-color: transparent;
   animation: audioUnlockPulse 2s ease-in-out infinite;
   max-width: calc(100vw - 2rem);
-}
-
-.audio-unlock-banner.audio-unlock-hide {
-  opacity: 0;
-  transform: translateX(-50%) translateY(12px);
-  transition: opacity 0.3s, transform 0.3s;
-  pointer-events: none;
 }
 
 .audio-unlock-icon {
