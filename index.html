@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ELGC Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/academy.css">
+  <link rel="stylesheet" href="css/tools.css">
+  <link rel="stylesheet" href="css/settings.css">
+  <script>
+    (function () {
+      var t = localStorage.getItem("musicQuest_theme");
+      document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
+    })();
+  </script>
+</head>
+<body class="piano-hidden">
+
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <div class="app-title">ELGC <span>Playground</span></div>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Dark mode">
+        <span class="theme-icon" aria-hidden="true">🌙</span>
+        <span class="theme-label">Dark</span>
+      </button>
+      <button type="button" class="piano-toggle" id="piano-toggle" aria-pressed="false" aria-label="Show piano keyboard" title="Show piano">
+        <span class="piano-toggle-icon" aria-hidden="true">🎹</span>
+        <span class="piano-toggle-label">Piano</span>
+      </button>
+      <button type="button" class="sound-toggle" id="sound-toggle" aria-label="Sound settings" title="Choose instrument">
+        <span class="sound-toggle-icon" aria-hidden="true">🔊</span>
+        <span class="sound-toggle-label" id="sound-toggle-label">Grand</span>
+      </button>
+    </div>
+    <div class="top-stats">
+      <div class="stat-pill wide">
+        <span class="stat-label">Mode</span>
+        <span class="stat-value" id="stat-mode">Select Mode</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">XP</span>
+        <span class="stat-value accent" id="stat-xp">0</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Level</span>
+        <span class="stat-value" id="stat-level">1</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Streak</span>
+        <span class="stat-value" id="stat-streak">0</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Best</span>
+        <span class="stat-value" id="stat-highscore">0</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <section id="screen-menu" class="screen active center-area screen-menu">
+      <div class="mode-intro mode-intro-compact">
+        <br>
+        <h2>Choose Your Path</h2>
+        <p>ELGC’s music playground — explore, play, and learn one note at a time.</p>
+      </div>
+
+      <nav class="menu-tabs" aria-label="Main sections">
+        <button type="button" class="menu-tab active" data-tab="play">Play</button>
+        <button type="button" class="menu-tab" data-tab="academy">Academy</button>
+        <button type="button" class="menu-tab" data-tab="tools">Tools</button>
+      </nav>
+
+      <div id="panel-play" class="menu-panel active">
+        <div class="mode-grid" id="mode-grid"></div>
+      </div>
+
+      <div id="panel-academy" class="menu-panel">
+        <div class="mode-intro" style="margin-bottom: 0.75rem;">
+          <p>Interactive lessons — tap, listen, quiz, earn XP.</p>
+        </div>
+        <div class="mode-grid" id="academy-grid"></div>
+      </div>
+
+      <div id="panel-tools" class="menu-panel">
+        <div class="mode-intro" style="margin-bottom: 0.75rem;">
+          <p>Deep-dive labs — modes, odd meters, intervals &amp; more.</p>
+        </div>
+        <div class="mode-grid" id="tools-grid"></div>
+      </div>
+    </section>
+
+    <section id="screen-tool-circle" class="screen screen-tool">
+      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <div class="tool-page-header tool-page-header-inset">
+        <h2>Circle of Fifths</h2>
+        <p>Click any key — details appear on the right. Use the 🎹 toggle if you want the keyboard.</p>
+      </div>
+      <div class="tool-layout tool-layout-circle">
+        <aside class="circle-guide-panel" aria-label="How to use the circle">
+          <h4>How to use</h4>
+          <ul>
+            <li><strong>Tap a slice</strong> on the wheel to select a key and hear its root.</li>
+            <li><strong>Clockwise</strong> — each step is a perfect fifth (C → G → D → A → E…).</li>
+            <li><strong>Counter-clockwise</strong> adds flats; clockwise adds sharps.</li>
+            <li><strong>Neighbors</strong> share many notes — smooth key changes.</li>
+            <li><strong>Right panel</strong> — signature, relative minor, scale, and diatonic chords.</li>
+          </ul>
+        </aside>
+        <div class="tool-main tool-main-circle">
+          <div class="tool-circle-wrap">
+            <div class="circle-wrap" id="tool-circle-mount"></div>
+          </div>
+        </div>
+        <aside class="tool-sidebar" id="tool-sidebar"></aside>
+      </div>
+    </section>
+
+    <section id="screen-tool-progressions" class="screen screen-tool">
+      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <div class="tool-page-header tool-page-header-inset">
+        <h2>Chord Progressions</h2>
+        <p>Full diatonic chart (1–7) for your key — then explore classic progressions.</p>
+      </div>
+      <div class="tool-layout">
+        <div class="tool-main">
+          <div class="tool-controls">
+            <label>Key
+              <select class="tool-select" id="prog-key-select"></select>
+            </label>
+            <label>Progression
+              <select class="tool-select" id="prog-type-select"></select>
+            </label>
+            <button type="button" class="tool-btn primary" id="prog-play-btn">▶ Play Progression</button>
+          </div>
+          <h3 class="chart-section-title">Pick a degree (1–7)</h3>
+          <p class="chart-section-hint">Tap any number or chart cell to select, hear, and inspect that chord. Gold outline = your pick · teal = in the preset progression below.</p>
+          <div class="degree-picker-row" id="prog-degree-picker" role="group" aria-label="Chord degree 1 through 7"></div>
+          <div id="prog-degree-chart"></div>
+          <button type="button" class="tool-btn secondary prog-play-degree-btn" id="prog-play-degree-btn" hidden>▶ Play selected</button>
+          <h3 class="chart-section-title">Progression</h3>
+          <div class="prog-visual" id="prog-visual"></div>
+        </div>
+        <aside class="tool-sidebar" id="tool-sidebar-prog"></aside>
+      </div>
+    </section>
+
+    <section id="screen-tool-chord-structure" class="screen screen-tool">
+      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <div class="tool-page-header tool-page-header-inset">
+        <h2>Chord Structures</h2>
+        <p>From basic triads to lush 13ths — tap to hear each shape on the piano.</p>
+      </div>
+      <div class="tool-layout">
+        <div class="tool-main">
+          <div class="tool-controls">
+            <label>Root note
+              <select class="tool-select" id="chord-struct-root"></select>
+            </label>
+            <label>Reference key
+              <select class="tool-select" id="chord-struct-key"></select>
+            </label>
+          </div>
+          <div class="chord-degree-ref-panel">
+            <h3 class="chart-section-title">Degrees 1–7 in this key</h3>
+            <p class="chart-section-hint chord-formula-hint">Formulas like <strong>♭3</strong> count from the <em>chord root</em> you pick above. Numbers <strong>1–7</strong> are the diatonic chords built on each step of the key.</p>
+            <div id="chord-structure-degree-ref"></div>
+          </div>
+          <div id="chord-structure-ladder"></div>
+        </div>
+        <aside class="tool-sidebar" id="tool-sidebar-chord-struct"></aside>
+      </div>
+    </section>
+
+    <section id="screen-tool-nashville" class="screen screen-tool">
+      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <div class="tool-page-header tool-page-header-inset">
+        <h2>Nashville Number Practice</h2>
+        <p>Find chord degrees in any key — grid or piano.</p>
+      </div>
+      <div class="tool-layout">
+        <div class="tool-main">
+          <div class="tool-controls">
+            <label>Key
+              <select class="tool-select" id="nash-key-select"></select>
+            </label>
+            <button type="button" class="tool-btn secondary" id="nash-next-btn">Next Challenge</button>
+          </div>
+          <div id="nash-practice-card"></div>
+          <p class="practice-feedback" id="nash-feedback"></p>
+          <div class="degree-grid-practice" id="nash-degree-grid"></div>
+        </div>
+        <aside class="tool-sidebar" id="tool-sidebar-nash"></aside>
+      </div>
+    </section>
+
+    <section id="screen-tool-bpm" class="screen screen-tool">
+      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <div class="tool-page-header tool-page-header-inset">
+        <h2>BPM Metronome</h2>
+        <p>Big tempo in the center — options on the left, tips on the right.</p>
+      </div>
+      <div class="tool-layout tool-layout-bpm">
+        <aside class="bpm-controls-panel" aria-label="Metronome options">
+          <h3 class="bpm-panel-title">Options</h3>
+          <div class="bpm-control-block">
+            <span class="bpm-control-label">Tempo</span>
+            <div class="bpm-slider-row">
+              <span class="bpm-slider-min">40</span>
+              <input type="range" class="bpm-slider" id="bpm-slider" min="40" max="220" value="100" aria-label="BPM slider">
+              <span class="bpm-slider-max">220</span>
+            </div>
+          </div>
+          <div class="bpm-control-block">
+            <span class="bpm-control-label">Click pattern</span>
+            <div class="bpm-mode-toggle">
+              <button type="button" class="bpm-mode-btn active" id="bpm-mode-quarter" title="One click per beat">Quarter</button>
+              <button type="button" class="bpm-mode-btn" id="bpm-mode-eighth" title="Two clicks per beat">8ths</button>
+            </div>
+          </div>
+          <div class="bpm-control-block">
+            <label class="bpm-straight-toggle">
+              <input type="checkbox" id="bpm-straight-clicks">
+              <span>Straight clicks</span>
+              <small>No downbeat accent</small>
+            </label>
+          </div>
+          <div class="bpm-control-block">
+            <span class="bpm-control-label">Presets</span>
+            <div class="bpm-preset-row">
+              <button type="button" class="bpm-chip bpm-preset-chip" data-bpm="60">60</button>
+              <button type="button" class="bpm-chip bpm-preset-chip" data-bpm="80">80</button>
+              <button type="button" class="bpm-chip bpm-preset-chip" data-bpm="100">100</button>
+              <button type="button" class="bpm-chip bpm-preset-chip" data-bpm="120">120</button>
+              <button type="button" class="bpm-chip bpm-preset-chip" data-bpm="140">140</button>
+            </div>
+          </div>
+          <div class="bpm-transport">
+            <button type="button" class="tool-btn primary bpm-transport-btn" id="bpm-start-btn">▶ Start</button>
+            <button type="button" class="tool-btn secondary bpm-transport-btn" id="bpm-stop-btn">■ Stop</button>
+          </div>
+        </aside>
+        <div class="tool-main bpm-hero">
+          <div class="bpm-hero-inner">
+            <div class="bpm-pulse-ring" id="bpm-pulse-ring" aria-hidden="true"></div>
+            <div class="bpm-tool-value" id="bpm-tool-value">100</div>
+            <div class="bpm-tool-label">beats per minute</div>
+            <p class="bpm-hero-status" id="bpm-hero-status">Tap the circle or press Start</p>
+            <div class="bpm-tap-zone" id="bpm-tap-zone">
+              <span class="tap-title">TAP</span>
+              <span class="tap-sub" id="bpm-tap-hint">quarter-note beats</span>
+            </div>
+          </div>
+        </div>
+        <aside class="tool-sidebar bpm-details-sidebar" id="tool-sidebar-bpm"></aside>
+      </div>
+    </section>
+
+    <section id="screen-tool-modes" class="screen screen-tool">
+      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <div class="tool-page-header tool-page-header-inset">
+        <h2>Modal Scales</h2>
+        <p>Dorian, Lydian, Phrygian &amp; more — hear how each mode colors the same root.</p>
+      </div>
+      <div class="tool-layout">
+        <div class="tool-main">
+          <div class="tool-controls">
+            <label>Root
+              <select class="tool-select" id="modes-root-select"></select>
+            </label>
+            <button type="button" class="tool-btn primary" id="modes-play-scale-btn">▶ Play scale</button>
+          </div>
+          <div class="modes-degree-ref-panel">
+            <h3 class="chart-section-title" id="modes-degree-title">Degrees 1–7</h3>
+            <p class="chart-section-hint" id="modes-degree-hint">Each step of the selected mode on this root.</p>
+            <div id="modes-degree-ref"></div>
+          </div>
+          <div class="mode-cards-grid" id="modes-cards-grid"></div>
+        </div>
+        <aside class="tool-sidebar" id="tool-sidebar-modes"></aside>
+      </div>
+    </section>
+
+    <section id="screen-tool-timesig" class="screen screen-tool">
+      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <div class="tool-page-header tool-page-header-inset">
+        <h2>Time Signatures</h2>
+        <p>Common, compound &amp; odd meters — explanations plus a pattern metronome.</p>
+      </div>
+      <div class="tool-layout">
+        <div class="tool-main">
+          <div class="tool-controls">
+            <label>Signature
+              <select class="tool-select" id="timesig-select"></select>
+            </label>
+            <label>BPM
+              <input type="range" class="bpm-slider" id="timesig-bpm" min="40" max="180" value="90">
+            </label>
+            <span class="timesig-bpm-val" id="timesig-bpm-val">90</span>
+            <button type="button" class="tool-btn primary" id="timesig-start-btn">Start</button>
+            <button type="button" class="tool-btn secondary" id="timesig-stop-btn">Stop</button>
+          </div>
+          <div class="timesig-display" id="timesig-display">4/4</div>
+          <div class="timesig-grouping" id="timesig-grouping"></div>
+          <div class="timesig-beat-row" id="timesig-beat-row"></div>
+        </div>
+        <aside class="tool-sidebar" id="tool-sidebar-timesig"></aside>
+      </div>
+    </section>
+
+    <section id="screen-tool-intervals" class="screen screen-tool">
+      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <div class="tool-page-header tool-page-header-inset">
+        <h2>Intervals</h2>
+        <p>Distance between two notes — hear each interval from any root.</p>
+      </div>
+      <div class="tool-layout">
+        <div class="tool-main">
+          <div class="tool-controls">
+            <label>Root
+              <select class="tool-select" id="interval-root-select"></select>
+            </label>
+          </div>
+          <div class="interval-cards-grid" id="interval-cards-grid"></div>
+        </div>
+        <aside class="tool-sidebar" id="tool-sidebar-intervals"></aside>
+      </div>
+    </section>
+
+    <section id="screen-game" class="screen center-area">
+      <button type="button" class="back-btn back-btn-floating" id="back-to-menu">← Modes</button>
+      <div class="challenge-panel" id="challenge-panel">
+        <p class="instruction" id="instruction">Ready?</p>
+        <p class="sub-instruction" id="sub-instruction"></p>
+        <div class="sequence-display" id="sequence-display" style="display: none;"></div>
+        <div class="chord-progress" id="chord-progress" style="display: none;"></div>
+        <button type="button" class="submit-chord-btn" id="submit-chord" style="display: none;">Check Chord</button>
+        <p class="score-line" id="score-line"></p>
+      </div>
+    </section>
+
+    <section id="screen-tutorial" class="screen screen-tutorial center-area">
+      <button type="button" class="back-btn back-btn-floating" id="back-from-tutorial">← Academy</button>
+      <div class="tutorial-header">
+        <div class="tutorial-progress-wrap">
+          <div class="tutorial-progress-bar">
+            <div class="tutorial-progress-fill" id="tutorial-progress-fill"></div>
+          </div>
+          <span class="tutorial-step-label" id="tutorial-step-label">Step 1 / 4</span>
+        </div>
+        <div class="tutorial-title" id="tutorial-title">Lesson</div>
+      </div>
+      <div class="tutorial-stage" id="tutorial-stage"></div>
+    </section>
+
+  </main>
+
+  <footer class="piano-area">
+    <div id="piano-mount"></div>
+  </footer>
+
+  <div class="sound-settings-backdrop" id="sound-settings-backdrop" hidden></div>
+  <div class="sound-settings-panel" id="sound-settings-panel" role="dialog" aria-labelledby="sound-settings-title" hidden>
+    <div class="sound-settings-header">
+      <h2 id="sound-settings-title">Sound</h2>
+      <p class="sound-settings-sub">Choose an instrument for the piano and all playback in the app.</p>
+      <button type="button" class="sound-settings-close" id="sound-settings-close" aria-label="Close">✕</button>
+    </div>
+    <div class="sound-settings-body"></div>
+  </div>
+
+  <div class="xp-popup-container" id="xp-popup-container"></div>
+
+  <div class="level-up-banner" id="level-up-banner">
+    <div class="level-up-inner">
+      <h2>Level Up!</h2>
+      <p></p>
+    </div>
+  </div>
+
+  <script src="js/theme.js"></script>
+  <script src="js/instruments.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/piano.js"></script>
+  <script src="js/piano-panel.js"></script>
+  <script src="js/modes.js"></script>
+  <script src="js/tutorials.js"></script>
+  <script src="js/music-theory.js"></script>
+  <script src="js/tools.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
