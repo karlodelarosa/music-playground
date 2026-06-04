@@ -64,6 +64,8 @@ const Piano = (() => {
   }
 
   function bindKey(btn, noteId) {
+    let lastTouchAt = 0;
+
     const press = (e) => {
       e.preventDefault();
       if (!enabled) return;
@@ -71,7 +73,19 @@ const Piano = (() => {
       activateKey(noteId, true);
       if (onPressCallback) onPressCallback(noteId);
     };
-    btn.addEventListener("pointerdown", press);
+
+    btn.addEventListener(
+      "touchstart",
+      (e) => {
+        lastTouchAt = Date.now();
+        press(e);
+      },
+      { passive: false }
+    );
+    btn.addEventListener("pointerdown", (e) => {
+      if (Date.now() - lastTouchAt < 400) return;
+      press(e);
+    });
     btn.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();

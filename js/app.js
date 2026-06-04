@@ -226,7 +226,7 @@
         <p>${meta.desc}</p>
         <span class="mode-badge ${unlocked ? meta.tier : "locked"}">${unlocked ? meta.tier : lockText}</span>
       `;
-      if (unlocked) card.addEventListener("click", () => startMode(id));
+      if (unlocked) AudioEngine.bindTap(card, () => startMode(id));
       els.modeGrid.appendChild(card);
     });
   }
@@ -250,7 +250,7 @@
         <p>${meta.desc}</p>
         <span class="mode-badge ${badge}">${badgeText}</span>
       `;
-      if (unlocked) card.addEventListener("click", () => startTutorial(id));
+      if (unlocked) AudioEngine.bindTap(card, () => startTutorial(id));
       els.academyGrid.appendChild(card);
     });
   }
@@ -298,7 +298,7 @@
         <p>${meta.desc}</p>
         <span class="mode-badge ${meta.tier || "beginner"}">Open</span>
       `;
-      card.addEventListener("click", () => startTool(id));
+      AudioEngine.bindTap(card, () => startTool(id));
       els.toolsGrid.appendChild(card);
     });
   }
@@ -452,16 +452,20 @@
     tab.addEventListener("click", () => setMenuTab(tab.dataset.tab));
   });
 
-  const unlockOnGesture = () => AudioEngine.unlockAudio();
-  ["touchstart", "touchend", "pointerdown", "click"].forEach((evt) => {
-    document.body.addEventListener(evt, unlockOnGesture, { passive: true, capture: true });
-  });
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") AudioEngine.unlockAudio();
-  });
+  document.body.addEventListener(
+    "touchstart",
+    () => AudioEngine.unlockAudio(),
+    { passive: true, capture: true }
+  );
+  document.body.addEventListener(
+    "click",
+    () => AudioEngine.unlockAudio(),
+    { capture: true }
+  );
 
   Theme.init();
   SoundSettings.init();
+  AudioEngine.initMobileUnlockUI();
 
   renderStats();
   buildModeGrid();

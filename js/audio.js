@@ -1,5 +1,6 @@
 /**
  * Web Audio — notes, chords, metronome; instrument via Instruments presets.
+ * Mobile (iOS): unlock + schedule audio synchronously inside the touch handler.
  */
 const AudioEngine = (() => {
   const NOTE_FREQ = {
@@ -22,51 +23,60 @@ const AudioEngine = (() => {
     Fs: "F#", G: "G", Gs: "G#", A: "A", As: "A#", B: "B",
   };
 
+  const MIN_GAIN = 0.0001;
+
   let ctx = null;
   let instrumentId = "grand";
-  let unlockPromise = null;
+  let primed = false;
 
   function getContext() {
     if (!ctx) {
       const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return null;
       ctx = new Ctx();
       ctx.addEventListener("statechange", () => {
-        if (ctx.state === "suspended") unlockPromise = null;
+        if (ctx.state === "suspended") primed = false;
       });
     }
     return ctx;
   }
 
-  /** Prime Web Audio during a tap/click (required on iOS / mobile Safari). */
+  /** Must run synchronously inside touchstart/click — do not await resume(). */
   function unlockAudio() {
     const audio = getContext();
-    if (audio.state === "running") return Promise.resolve();
+    if (!audio) return false;
 
-    if (!unlockPromise) {
-      unlockPromise = (async () => {
-        if (audio.state === "suspended") await audio.resume();
+    if (audio.state === "suspended") {
+      try {
+        audio.resume();
+      } catch (_) {}
+    }
+
+    if (!primed) {
+      try {
         const buffer = audio.createBuffer(1, 1, audio.sampleRate);
         const source = audio.createBufferSource();
         source.buffer = buffer;
         source.connect(audio.destination);
         source.start(0);
         source.stop(audio.currentTime + 0.001);
-      })().catch(() => {
-        unlockPromise = null;
-      });
+        primed = true;
+      } catch (_) {}
     }
-    return unlockPromise;
+
+    return audio.state === "running" || primed;
   }
 
-  function whenRunning(fn) {
+  function isUnlocked() {
+    const audio = ctx;
+    return !!audio && (audio.state === "running" || primed);
+  }
+
+  function withAudio(fn) {
+    unlockAudio();
     const audio = getContext();
-    if (audio.state === "running") {
-      fn(audio);
-      return;
-    }
-    unlockAudio().then(() => {
-      if (getContext().state === "running") fn(getContext());
-    });
+    if (!audio) return;
+    fn(audio);
   }
 
   function setInstrument(id) {
@@ -81,7 +91,7 @@ const AudioEngine = (() => {
     const freq = NOTE_FREQ[noteId];
     if (!freq) return;
 
-    whenRunning((audio) => {
+    withAudio((audio) => {
       const t = audio.currentTime + when;
       const minDur = Instruments.getMinDuration(instrumentId);
       const dur = Math.max(duration, minDur);
@@ -91,26 +101,27 @@ const AudioEngine = (() => {
   }
 
   function playSuccess() {
-    whenRunning((audio) => {
+    withAudio((audio) => {
       const t = audio.currentTime;
       [523.25, 659.25, 783.99].forEach((freq, i) => {
         const osc = audio.createOscillator();
         const gain = audio.createGain();
         osc.type = "sine";
         osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0, t + i * 0.08);
-        gain.gain.linearRampToValueAtTime(0.15, t + i * 0.08 + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.25);
+        const at = t + i * 0.08;
+        gain.gain.setValueAtTime(MIN_GAIN, at);
+        gain.gain.linearRampToValueAtTime(0.15, at + 0.02);
+        gain.gain.exponentialRampToValueAtTime(MIN_GAIN, at + 0.25);
         osc.connect(gain);
         gain.connect(audio.destination);
-        osc.start(t + i * 0.08);
-        osc.stop(t + i * 0.08 + 0.3);
+        osc.start(at);
+        osc.stop(at + 0.3);
       });
     });
   }
 
   function playWrong() {
-    whenRunning((audio) => {
+    withAudio((audio) => {
       const t = audio.currentTime;
       const osc = audio.createOscillator();
       const gain = audio.createGain();
@@ -118,7 +129,7 @@ const AudioEngine = (() => {
       osc.frequency.setValueAtTime(220, t);
       osc.frequency.exponentialRampToValueAtTime(165, t + 0.2);
       gain.gain.setValueAtTime(0.1, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      gain.gain.exponentialRampToValueAtTime(MIN_GAIN, t + 0.25);
       osc.connect(gain);
       gain.connect(audio.destination);
       osc.start(t);
@@ -134,14 +145,14 @@ const AudioEngine = (() => {
   }
 
   function playClick(accent = false) {
-    whenRunning((audio) => {
+    withAudio((audio) => {
       const t = audio.currentTime;
       const osc = audio.createOscillator();
       const gain = audio.createGain();
       osc.type = "sine";
       osc.frequency.value = accent ? 880 : 660;
       gain.gain.setValueAtTime(accent ? 0.18 : 0.12, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+      gain.gain.exponentialRampToValueAtTime(MIN_GAIN, t + 0.06);
       osc.connect(gain);
       gain.connect(audio.destination);
       osc.start(t);
@@ -162,6 +173,8 @@ const AudioEngine = (() => {
       pattern: options.pattern ?? null,
       clickNote: options.clickNote ?? 1,
     };
+
+    playClick(true);
 
     if (options.pattern && Array.isArray(options.pattern) && options.pattern.length > 0) {
       const len = options.pattern.length;
@@ -197,6 +210,70 @@ const AudioEngine = (() => {
     }
   }
 
+  function markMobileUnlocked() {
+    try {
+      sessionStorage.setItem("elgc_audio_v2", "1");
+    } catch (_) {}
+  }
+
+  /** Run action on touchstart (iOS) or click (desktop); avoids delayed click breaking audio. */
+  function bindTap(el, fn) {
+    if (!el || typeof fn !== "function") return;
+    el.addEventListener(
+      "touchstart",
+      (e) => {
+        e.preventDefault();
+        unlockAudio();
+        fn(e);
+      },
+      { passive: false }
+    );
+    el.addEventListener("click", (e) => {
+      unlockAudio();
+      fn(e);
+    });
+  }
+
+  function initMobileUnlockUI() {
+    let dismissed = false;
+    try {
+      dismissed = sessionStorage.getItem("elgc_audio_v2") === "1";
+    } catch (_) {}
+
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    if (!coarse && navigator.maxTouchPoints < 1) return;
+    if (dismissed) return;
+
+    const banner = document.createElement("button");
+    banner.type = "button";
+    banner.className = "audio-unlock-banner";
+    banner.setAttribute("aria-label", "Enable sound");
+    banner.innerHTML =
+      '<span class="audio-unlock-icon" aria-hidden="true">🔊</span>' +
+      "<span class=\"audio-unlock-text\">Tap to enable sound</span>";
+
+    const enable = () => {
+      unlockAudio();
+      playTone("E", 0.3);
+      const audio = getContext();
+      if (audio && (audio.state === "running" || primed)) markMobileUnlocked();
+      banner.classList.add("audio-unlock-hide");
+      setTimeout(() => banner.remove(), 350);
+    };
+
+    banner.addEventListener(
+      "touchstart",
+      (e) => {
+        e.preventDefault();
+        enable();
+      },
+      { passive: false }
+    );
+    banner.addEventListener("click", enable);
+
+    document.body.appendChild(banner);
+  }
+
   return {
     NOTE_FREQ,
     DISPLAY,
@@ -212,6 +289,9 @@ const AudioEngine = (() => {
     playSuccess,
     playWrong,
     unlockAudio,
+    bindTap,
+    isUnlocked,
+    initMobileUnlockUI,
     setInstrument,
     getInstrument,
     displayName: (id) => DISPLAY[id] || id,

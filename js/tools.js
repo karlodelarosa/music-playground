@@ -50,8 +50,7 @@ const Tools = (() => {
 
     function bindCircleKeys() {
       mount.querySelectorAll(".circle-key").forEach((path) => {
-        const handler = () => selectKey(path.dataset.key, true);
-        path.addEventListener("click", handler);
+        AudioEngine.bindTap(path, () => selectKey(path.dataset.key, true));
       });
     }
 
@@ -97,8 +96,7 @@ const Tools = (() => {
       `);
 
       document.querySelectorAll("#tool-sidebar .mini-chord").forEach((btn) => {
-        // circle sidebar only
-        btn.addEventListener("click", () => {
+        AudioEngine.bindTap(btn, () => {
           const notes = btn.dataset.notes.split(",");
           AudioEngine.playChord(notes);
           notes.forEach((n) => window.ToolPiano?.highlightCorrect(n));
@@ -126,7 +124,7 @@ const Tools = (() => {
 
   function bindDegreeChart(container, chords, onSelect) {
     container.querySelectorAll(".degree-chart-cell").forEach((cell) => {
-      cell.addEventListener("click", (e) => {
+      AudioEngine.bindTap(cell, (e) => {
         onSelect(cell.dataset.num, { additive: e.shiftKey, play: true, source: cell });
       });
     });
@@ -314,8 +312,8 @@ const Tools = (() => {
 
     keySelect.addEventListener("change", render);
     progSelect.addEventListener("change", render);
-    playBtn.addEventListener("click", playSequence);
-    playDegreeBtn.addEventListener("click", playSelectedDegrees);
+    AudioEngine.bindTap(playBtn, playSequence);
+    AudioEngine.bindTap(playDegreeBtn, playSelectedDegrees);
     render();
   }
 
@@ -387,7 +385,7 @@ const Tools = (() => {
       ladder.innerHTML = html;
 
       ladder.querySelectorAll(".chord-structure-card").forEach((card) => {
-        card.addEventListener("click", () => {
+        AudioEngine.bindTap(card, () => {
           selectedId = card.dataset.id;
           const ch = MusicTheory.getCatalogChord(selectedId, rootSelect.value);
           ladder.querySelectorAll(".chord-structure-card").forEach((c) => c.classList.remove("selected"));
@@ -662,12 +660,9 @@ const Tools = (() => {
     }
 
     slider.addEventListener("input", () => setBpm(parseInt(slider.value, 10)));
-    tapZone.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      registerTap();
-    });
+    AudioEngine.bindTap(tapZone, () => registerTap());
 
-    startBtn.addEventListener("click", () => {
+    AudioEngine.bindTap(startBtn, () => {
       bpmState.running = true;
       pulse.classList.add("running");
       updatePulseSpeed();
@@ -746,10 +741,12 @@ const Tools = (() => {
 
     function playScale(scale, stagger = 0.22) {
       scale.notes.forEach((n, i) => {
-        setTimeout(() => {
+        const play = () => {
           AudioEngine.playTone(n, 0.4);
           window.ToolPiano?.highlightCorrect(n);
-        }, i * stagger * 1000);
+        };
+        if (i === 0) play();
+        else setTimeout(play, i * stagger * 1000);
       });
     }
 
@@ -759,7 +756,7 @@ const Tools = (() => {
       degreeHint.textContent = `1 = ${scale.degrees[0]?.noteName} (root). Tap any degree to hear it.`;
       degreeRef.innerHTML = MusicTheory.renderScaleDegreeHtml(scale);
       degreeRef.querySelectorAll(".scale-degree-cell").forEach((cell) => {
-        cell.addEventListener("click", () => {
+        AudioEngine.bindTap(cell, () => {
           const noteId = cell.dataset.note;
           AudioEngine.playTone(noteId, 0.45);
           window.ToolPiano?.highlightCorrect(noteId);
@@ -783,7 +780,7 @@ const Tools = (() => {
       }).join("");
 
       grid.querySelectorAll(".mode-scale-card").forEach((card) => {
-        card.addEventListener("click", () => {
+        AudioEngine.bindTap(card, () => {
           selectedId = card.dataset.id;
           grid.querySelectorAll(".mode-scale-card").forEach((c) => c.classList.remove("selected"));
           card.classList.add("selected");
@@ -799,7 +796,7 @@ const Tools = (() => {
       showModeSidebar(scale);
     }
 
-    playBtn.addEventListener("click", () => {
+    AudioEngine.bindTap(playBtn, () => {
       playScale(MusicTheory.getModeScale(rootSelect.value, selectedId));
     });
     rootSelect.addEventListener("change", renderGrid);
@@ -890,7 +887,7 @@ const Tools = (() => {
       stopBeatAnim();
       render();
     });
-    startBtn.addEventListener("click", startMetro);
+    AudioEngine.bindTap(startBtn, startMetro);
     stopBtn.addEventListener("click", () => {
       AudioEngine.stopMetronome();
       stopBeatAnim();
@@ -913,7 +910,9 @@ const Tools = (() => {
 
     function playInterval(rootId, interval) {
       const notes = MusicTheory.intervalNotes(rootId, interval.semitones);
+      AudioEngine.unlockAudio();
       AudioEngine.playTone(notes[0], 0.35);
+      window.ToolPiano?.highlightCorrect(notes[0]);
       setTimeout(() => {
         AudioEngine.playTone(notes[1], 0.45);
         window.ToolPiano?.highlightCorrect(notes[1]);
@@ -959,7 +958,7 @@ const Tools = (() => {
       }).join("");
 
       grid.querySelectorAll(".interval-card").forEach((card) => {
-        card.addEventListener("click", () => {
+        AudioEngine.bindTap(card, () => {
           selectedId = card.dataset.id;
           grid.querySelectorAll(".interval-card").forEach((c) => c.classList.remove("selected"));
           card.classList.add("selected");

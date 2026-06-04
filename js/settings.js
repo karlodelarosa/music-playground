@@ -80,7 +80,7 @@ const SoundSettings = (() => {
     body.innerHTML = buildPanel();
     body.dataset.built = "1";
     body.querySelectorAll(".sound-option").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+      AudioEngine.bindTap(btn, (e) => {
         e.stopPropagation();
         const id = btn.dataset.instrument;
         set(id);
@@ -136,9 +136,8 @@ const SoundSettings = (() => {
     }
 
     if (toggle) {
-      toggle.addEventListener("click", (e) => {
+      AudioEngine.bindTap(toggle, (e) => {
         e.stopPropagation();
-        AudioEngine.unlockAudio();
         if (isOpen) close();
         else open();
       });
