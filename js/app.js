@@ -452,11 +452,13 @@
     tab.addEventListener("click", () => setMenuTab(tab.dataset.tab));
   });
 
-  document.body.addEventListener(
-    "pointerdown",
-    () => AudioEngine.unlockAudio(),
-    { once: true }
-  );
+  const unlockOnGesture = () => AudioEngine.unlockAudio();
+  ["touchstart", "touchend", "pointerdown", "click"].forEach((evt) => {
+    document.body.addEventListener(evt, unlockOnGesture, { passive: true, capture: true });
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") AudioEngine.unlockAudio();
+  });
 
   Theme.init();
   SoundSettings.init();

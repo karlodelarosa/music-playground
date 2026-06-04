@@ -37,17 +37,20 @@ const Tools = (() => {
     const mount = document.getElementById("tool-circle-mount");
     let selected = "C";
 
-    function selectKey(keyId) {
+    function selectKey(keyId, play = true) {
       selected = keyId;
       mount.innerHTML = MusicTheory.buildCircleSvg(selected);
       bindCircleKeys();
       showCircleSidebar(keyId);
-      AudioEngine.playTone(keyId, 0.45);
+      if (play) {
+        AudioEngine.unlockAudio();
+        AudioEngine.playTone(keyId, 0.45);
+      }
     }
 
     function bindCircleKeys() {
       mount.querySelectorAll(".circle-key").forEach((path) => {
-        const handler = () => selectKey(path.dataset.key);
+        const handler = () => selectKey(path.dataset.key, true);
         path.addEventListener("click", handler);
       });
     }
@@ -103,7 +106,7 @@ const Tools = (() => {
       });
     }
 
-    selectKey("C");
+    selectKey("C", false);
   }
 
   function degreeSidebarHtml(ch, keyLabel) {

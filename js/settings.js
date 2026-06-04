@@ -138,6 +138,7 @@ const SoundSettings = (() => {
     if (toggle) {
       toggle.addEventListener("click", (e) => {
         e.stopPropagation();
+        AudioEngine.unlockAudio();
         if (isOpen) close();
         else open();
       });

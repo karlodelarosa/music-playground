@@ -67,6 +67,7 @@ const Piano = (() => {
     const press = (e) => {
       e.preventDefault();
       if (!enabled) return;
+      AudioEngine.unlockAudio();
       activateKey(noteId, true);
       if (onPressCallback) onPressCallback(noteId);
     };
