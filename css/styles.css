@@ -49,6 +49,7 @@
   --bubble-text: #ffffff;
   --piano-height: clamp(100px, 18vh, 140px);
   --top-bar-height: 3.1rem;
+  --floating-back-top: calc(var(--top-bar-height) + 0.35rem);
   --piano-offset: 0px;
 }
 
@@ -469,7 +470,7 @@ body.piano-hidden {
 
 .back-btn-floating {
   position: fixed;
-  top: calc(var(--top-bar-height) + 0.35rem);
+  top: var(--floating-back-top);
   left: 0.5rem;
   z-index: 200;
   margin: 0;
@@ -499,6 +500,15 @@ body.piano-hidden {
   padding-left: 5.5rem;
 }
 
+@media (max-width: 768px) {
+  :root,
+  [data-theme="light"],
+  [data-theme="dark"] {
+    --top-bar-height: 5.75rem;
+    --floating-back-top: 6.15rem;
+  }
+}
+
 @media (max-width: 520px) {
   .back-btn-floating {
     padding: 0.35rem 0.55rem;
@@ -506,7 +516,8 @@ body.piano-hidden {
   }
   .screen-tool .tool-page-header-inset,
   .screen-tutorial .tutorial-header {
-    padding-left: 4.75rem;
+    padding-left: 0.65rem;
+    padding-top: 1.85rem;
   }
 }
 

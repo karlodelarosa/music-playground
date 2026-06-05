@@ -420,6 +420,8 @@
 }
 
 .bpm-controls-panel {
+  display: flex;
+  flex-direction: column;
   padding: 1rem;
   border-radius: 14px;
   background: var(--bg-panel);
@@ -533,7 +535,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  margin-top: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
 }
 
 .bpm-transport-btn {
@@ -1100,18 +1103,153 @@
 }
 
 @media (max-width: 768px) {
+  #screen-tool-bpm.screen-tool {
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+
+  #screen-tool-bpm .tool-page-header-inset p {
+    display: none;
+  }
+
+  #screen-tool-bpm .tool-page-header {
+    margin-bottom: 0.15rem;
+  }
+
+  #screen-tool-bpm .tool-page-header-inset h2 {
+    font-size: 1.05rem;
+  }
+
+  #screen-tool-bpm .tool-layout-bpm {
+    grid-template-columns: 1fr;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    overflow: hidden;
+  }
+
+  #screen-tool-bpm .bpm-hero {
+    order: 1;
+    flex: 1;
+    min-height: 0;
+    padding: 0.2rem 0.35rem;
+  }
+
+  #screen-tool-bpm .bpm-hero-inner {
+    justify-content: center;
+    gap: 0.35rem;
+    height: 100%;
+  }
+
+  #screen-tool-bpm .bpm-tool-value {
+    font-size: clamp(2.6rem, 13vw, 3.4rem);
+    line-height: 1;
+  }
+
+  #screen-tool-bpm .bpm-tool-label {
+    font-size: 0.72rem;
+    margin-top: 0;
+  }
+
+  #screen-tool-bpm .bpm-hero-status {
+    font-size: 0.68rem;
+    margin: 0.15rem 0 0.25rem;
+  }
+
+  #screen-tool-bpm .bpm-tap-zone {
+    width: min(128px, 36vw);
+    height: min(128px, 36vw);
+    border-width: 2px;
+  }
+
+  #screen-tool-bpm .bpm-tap-zone .tap-title {
+    font-size: 1.1rem;
+  }
+
+  #screen-tool-bpm .bpm-tap-zone .tap-sub {
+    font-size: 0.65rem;
+  }
+
+  #screen-tool-bpm .bpm-pulse-ring {
+    width: min(150px, 42vw);
+    height: min(150px, 42vw);
+  }
+
+  #screen-tool-bpm .bpm-controls-panel {
+    order: 2;
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem 0.45rem;
+    padding: 0.55rem 0.6rem;
+    margin: 0;
+  }
+
+  #screen-tool-bpm .bpm-panel-title {
+    display: none;
+  }
+
+  #screen-tool-bpm .bpm-transport {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    order: -1;
+    margin: 0;
+    padding-top: 0;
+    gap: 0.35rem;
+  }
+
+  #screen-tool-bpm .bpm-transport-btn {
+    flex: 1;
+    padding: 0.55rem 0.5rem;
+    font-size: 0.82rem;
+  }
+
+  #screen-tool-bpm .bpm-control-block {
+    margin-bottom: 0;
+  }
+
+  #screen-tool-bpm .bpm-control-block-tempo {
+    grid-column: 1 / -1;
+  }
+
+  #screen-tool-bpm .bpm-control-block-presets {
+    grid-column: 1 / -1;
+  }
+
+  #screen-tool-bpm .bpm-control-label {
+    font-size: 0.65rem;
+    margin-bottom: 0.25rem;
+  }
+
+  #screen-tool-bpm .bpm-preset-row .bpm-chip {
+    flex: 1 1 auto;
+    min-width: 2.2rem;
+    padding: 0.35rem 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  #screen-tool-bpm .bpm-details-sidebar {
+    display: none;
+  }
+
   .tool-layout-bpm {
     grid-template-columns: 1fr;
   }
+
   .bpm-controls-panel {
     order: 2;
   }
+
   .bpm-transport {
     flex-direction: row;
   }
+
   .bpm-transport-btn {
     flex: 1;
   }
+
   .scale-degree-row {
     grid-template-columns: repeat(4, 1fr);
   }
