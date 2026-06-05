@@ -1,10 +1,34 @@
 /**
- * HTML5 Audio fallback — works on some iPhones where Web Audio is silent.
- * Uses short generated WAV tones (same approach as many sample-based web pianos).
+ * HTML5 Audio fallback — routes through the main speaker on some iPhones
+ * where Web Audio only plays on earphones / Bluetooth (not the loudspeaker).
  */
 const Html5Audio = (() => {
   const SAMPLE_RATE = 22050;
+  const POOL_SIZE = 10;
   const uriCache = new Map();
+  let pool = [];
+  let poolIdx = 0;
+  let speakerPrimed = false;
+
+  function ensurePool() {
+    if (pool.length) return;
+    for (let i = 0; i < POOL_SIZE; i++) {
+      const el = document.createElement("audio");
+      el.setAttribute("playsinline", "");
+      el.setAttribute("webkit-playsinline", "");
+      el.preload = "auto";
+      el.style.cssText = "position:fixed;width:0;height:0;opacity:0;pointer-events:none";
+      document.body.appendChild(el);
+      pool.push(el);
+    }
+  }
+
+  function acquirePlayer() {
+    ensurePool();
+    const el = pool[poolIdx % POOL_SIZE];
+    poolIdx += 1;
+    return el;
+  }
 
   function encodeWav(samples) {
     const n = samples.length;
@@ -46,7 +70,7 @@ const Html5Audio = (() => {
       let env = peak;
       if (t < attack) env = peak * (t / attack);
       else if (t > durationSec - release) env = peak * Math.max(0, (durationSec - t) / release);
-      out[i] = Math.sin((2 * Math.PI * freq * t)) * env;
+      out[i] = Math.sin(2 * Math.PI * freq * t) * env;
     }
     return out;
   }
@@ -59,12 +83,20 @@ const Html5Audio = (() => {
     return u;
   }
 
+  function playOnElement(el, uri, volume = 1) {
+    try {
+      el.pause();
+      el.currentTime = 0;
+      el.src = uri;
+      el.volume = Math.min(1, Math.max(0, volume));
+      const p = el.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } catch (_) {}
+  }
+
   function playFreq(freq, durationSec, delaySec = 0, peak = 0.28) {
-    const run = () => {
-      const el = new Audio(uriFor(freq, durationSec, peak));
-      el.volume = 1;
-      el.play().catch(() => {});
-    };
+    const uri = uriFor(freq, durationSec, peak);
+    const run = () => playOnElement(acquirePlayer(), uri);
     if (delaySec > 0) setTimeout(run, delaySec * 1000);
     else run();
   }
@@ -97,6 +129,14 @@ const Html5Audio = (() => {
     playFreq(440, 0.04, 0, 0.02);
   }
 
+  /** Claim the loudspeaker route (iOS may send Web Audio to earpiece/BT otherwise). */
+  function primeSpeakerRoute() {
+    if (speakerPrimed) return;
+    speakerPrimed = true;
+    ensurePool();
+    playOnElement(acquirePlayer(), uriFor(440, 0.05, 0.12), 0.35);
+  }
+
   function testNote(freqMap) {
     playTone("E", freqMap, 0.35, 0);
   }
@@ -108,6 +148,7 @@ const Html5Audio = (() => {
     playSuccess,
     playWrong,
     unlock,
+    primeSpeakerRoute,
     testNote,
     playFreq,
   };

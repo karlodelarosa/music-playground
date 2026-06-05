@@ -27,6 +27,13 @@ const AudioEngine = (() => {
 
   const COMPAT_KEY = "elgc_compat_audio";
 
+  function isIOS() {
+    return (
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+    );
+  }
+
   let ctx = null;
   let instrumentId = "grand";
   let primed = false;
@@ -68,6 +75,10 @@ const AudioEngine = (() => {
     if (useCompat() && typeof Html5Audio !== "undefined") {
       Html5Audio.unlock();
       return true;
+    }
+
+    if (isIOS() && typeof Html5Audio !== "undefined") {
+      Html5Audio.primeSpeakerRoute();
     }
 
     const audio = getContext();
@@ -370,7 +381,7 @@ const AudioEngine = (() => {
     const help = document.createElement("button");
     help.type = "button";
     help.className = "audio-unlock-help";
-    help.textContent = "No sound on this phone? Tap here";
+    help.textContent = "Speaker silent? Tap here (earphones work?)";
 
     const enable = () => {
       unlockAudio();

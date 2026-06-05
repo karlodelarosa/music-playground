@@ -56,7 +56,7 @@ const SoundSettings = (() => {
         <input type="checkbox" id="sound-compat-mode" ${on ? "checked" : ""}>
         <span class="sound-compat-label">iPhone compatibility audio</span>
       </label>
-      <p class="sound-compat-hint">Enable if other online pianos work on your phone but this app is silent. Uses the same style of audio as most web pianos.</p>
+      <p class="sound-compat-hint">Turn on if sound only works with <strong>earphones</strong> on your iPhone, or the built-in speaker is silent. Also check Control Center → volume → output is <strong>iPhone</strong>, not Bluetooth. Uses speaker-friendly audio like most web pianos.</p>
     </div>`;
   }
 
