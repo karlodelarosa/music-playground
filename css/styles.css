@@ -55,6 +55,9 @@
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-xl: 28px;
+  --aurora-1: rgba(8, 145, 178, 0.32);
+  --aurora-2: rgba(124, 58, 237, 0.26);
+  --aurora-3: rgba(217, 119, 6, 0.2);
 }
 
 [data-theme="dark"] {
@@ -99,6 +102,9 @@
   --piano-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
   --bubble-text: #0a0e1a;
   --piano-height: clamp(100px, 18vh, 140px);
+  --aurora-1: rgba(34, 211, 238, 0.28);
+  --aurora-2: rgba(167, 139, 250, 0.26);
+  --aurora-3: rgba(251, 191, 36, 0.16);
 }
 
 html, body {
@@ -118,6 +124,75 @@ body {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ── Ambient animated background ── */
+.bg-aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+}
+
+.blob-1 {
+  width: 46vw;
+  height: 46vw;
+  top: -14%;
+  left: -10%;
+  background: var(--aurora-1);
+  animation: auroraDrift1 28s ease-in-out infinite alternate;
+}
+
+.blob-2 {
+  width: 40vw;
+  height: 40vw;
+  top: 18%;
+  right: -12%;
+  background: var(--aurora-2);
+  animation: auroraDrift2 34s ease-in-out infinite alternate;
+}
+
+.blob-3 {
+  width: 36vw;
+  height: 36vw;
+  bottom: -16%;
+  left: 22%;
+  background: var(--aurora-3);
+  animation: auroraDrift3 24s ease-in-out infinite alternate;
+}
+
+@keyframes auroraDrift1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(7vw, 9vh) scale(1.12); }
+}
+
+@keyframes auroraDrift2 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-9vw, 7vh) scale(1.08); }
+}
+
+@keyframes auroraDrift3 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(6vw, -7vh) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob { animation: none; }
+}
+
+.top-bar,
+.app-main,
+.piano-area {
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Top bar ── */
