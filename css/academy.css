@@ -69,12 +69,19 @@
 }
 
 .mode-card.completed::after {
-  content: "✓";
+  content: "";
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  color: var(--success);
-  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  background-color: var(--success);
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>');
+  mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
 }
 
 /* ── Tutorial screen ── */
@@ -136,7 +143,7 @@
   padding: 1.25rem;
   background: var(--bg-panel);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   min-height: 200px;
   box-shadow: var(--shadow-lg);
   color: var(--text);
@@ -404,7 +411,7 @@
 
 .nashville-btn {
   padding: 0.75rem 0.5rem;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--bg-panel);
   cursor: pointer;
@@ -454,7 +461,7 @@
 
 .chord-type-card {
   padding: 0.85rem;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--btn-secondary-bg);
   cursor: pointer;
@@ -540,8 +547,16 @@
 }
 
 .tutorial-complete-badge .badge-icon {
-  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 0.5rem;
+  color: var(--accent-strong);
+}
+
+.tutorial-complete-badge .badge-icon svg {
+  width: 44px;
+  height: 44px;
 }
 
 @media (max-width: 480px) {

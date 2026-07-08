@@ -6,7 +6,7 @@ const Instruments = (() => {
     grand: {
       id: "grand",
       name: "Grand Piano",
-      icon: "🎹",
+      icon: "piano",
       category: "Keyboard",
       desc: "Warm acoustic piano — default keyboard.",
       minDuration: 0.42,
@@ -15,7 +15,7 @@ const Instruments = (() => {
     bright: {
       id: "bright",
       name: "Bright Piano",
-      icon: "✨",
+      icon: "sparkles",
       category: "Keyboard",
       desc: "Crisp, pop-ballad piano with extra sparkle.",
       minDuration: 0.4,
@@ -24,7 +24,7 @@ const Instruments = (() => {
     electric: {
       id: "electric",
       name: "Electric Piano",
-      icon: "🎛️",
+      icon: "sliders-horizontal",
       category: "Keyboard",
       desc: "Rhodes-style bell tone — smooth and jazzy.",
       minDuration: 0.55,
@@ -33,7 +33,7 @@ const Instruments = (() => {
     organ: {
       id: "organ",
       name: "Organ",
-      icon: "🪗",
+      icon: "wind",
       category: "Keyboard",
       desc: "Classic drawbar organ — sustained church tone.",
       minDuration: 0.9,
@@ -42,7 +42,7 @@ const Instruments = (() => {
     nylon: {
       id: "nylon",
       name: "Nylon Guitar",
-      icon: "🎸",
+      icon: "guitar",
       category: "Guitar",
       desc: "Soft fingerpicked nylon — mellow attack.",
       minDuration: 0.6,
@@ -51,7 +51,7 @@ const Instruments = (() => {
     steel: {
       id: "steel",
       name: "Steel Guitar",
-      icon: "🔊",
+      icon: "guitar",
       category: "Guitar",
       desc: "Brighter acoustic strum — more presence.",
       minDuration: 0.55,
@@ -60,7 +60,7 @@ const Instruments = (() => {
     synth: {
       id: "synth",
       name: "Synth Lead",
-      icon: "🎚️",
+      icon: "sliders-vertical",
       category: "Synth",
       desc: "Retro lead — smooth filtered tone.",
       minDuration: 0.48,
@@ -69,7 +69,7 @@ const Instruments = (() => {
     pad: {
       id: "pad",
       name: "Soft Pad",
-      icon: "☁️",
+      icon: "cloud",
       category: "Synth",
       desc: "Slow, airy pad for chords and atmosphere.",
       minDuration: 1.0,

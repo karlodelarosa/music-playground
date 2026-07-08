@@ -14,7 +14,7 @@
   <script>
     (function () {
       var t = localStorage.getItem("musicQuest_theme");
-      document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
     })();
   </script>
 </head>
@@ -24,15 +24,15 @@
     <div class="top-bar-left">
       <div class="app-title">ELGC <span>Playground</span></div>
       <button type="button" class="theme-toggle" id="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Dark mode">
-        <span class="theme-icon" aria-hidden="true">🌙</span>
+        <span class="theme-icon" aria-hidden="true"></span>
         <span class="theme-label">Dark</span>
       </button>
       <button type="button" class="piano-toggle" id="piano-toggle" aria-pressed="false" aria-label="Show piano keyboard" title="Show piano">
-        <span class="piano-toggle-icon" aria-hidden="true">🎹</span>
+        <span class="piano-toggle-icon" aria-hidden="true"><svg class="icon icon-piano" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.5 8c-1.4 0-2.6-.8-3.2-2A6.87 6.87 0 0 0 2 9v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8.5C22 9.6 20.4 8 18.5 8"/><path d="M2 14h20"/><path d="M6 14v4"/><path d="M10 14v4"/><path d="M14 14v4"/><path d="M18 14v4"/></svg></span>
         <span class="piano-toggle-label">Piano</span>
       </button>
       <button type="button" class="sound-toggle" id="sound-toggle" aria-label="Sound settings" title="Choose instrument">
-        <span class="sound-toggle-icon" aria-hidden="true">🔊</span>
+        <span class="sound-toggle-icon" aria-hidden="true"><svg class="icon icon-volume-2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg></span>
         <span class="sound-toggle-label" id="sound-toggle-label">Grand</span>
       </button>
     </div>
@@ -95,10 +95,10 @@
     </section>
 
     <section id="screen-tool-circle" class="screen screen-tool">
-      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <button type="button" class="back-btn back-btn-floating" data-back="tools"><svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> Tools</button>
       <div class="tool-page-header tool-page-header-inset">
         <h2>Circle of Fifths</h2>
-        <p>Click any key — details appear on the right. Use the 🎹 toggle if you want the keyboard.</p>
+        <p>Click any key — details appear on the right. Use the piano toggle if you want the keyboard.</p>
       </div>
       <div class="tool-layout tool-layout-circle">
         <aside class="circle-guide-panel" aria-label="How to use the circle">
@@ -121,7 +121,7 @@
     </section>
 
     <section id="screen-tool-progressions" class="screen screen-tool">
-      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <button type="button" class="back-btn back-btn-floating" data-back="tools"><svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> Tools</button>
       <div class="tool-page-header tool-page-header-inset">
         <h2>Chord Progressions</h2>
         <p>Full diatonic chart (1–7) for your key — then explore classic progressions.</p>
@@ -135,13 +135,13 @@
             <label>Progression
               <select class="tool-select" id="prog-type-select"></select>
             </label>
-            <button type="button" class="tool-btn primary" id="prog-play-btn">▶ Play Progression</button>
+            <button type="button" class="tool-btn primary" id="prog-play-btn"><svg class="icon icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg> Play Progression</button>
           </div>
           <h3 class="chart-section-title">Pick a degree (1–7)</h3>
           <p class="chart-section-hint">Tap any number or chart cell to select, hear, and inspect that chord. Gold outline = your pick · teal = in the preset progression below.</p>
           <div class="degree-picker-row" id="prog-degree-picker" role="group" aria-label="Chord degree 1 through 7"></div>
           <div id="prog-degree-chart"></div>
-          <button type="button" class="tool-btn secondary prog-play-degree-btn" id="prog-play-degree-btn" hidden>▶ Play selected</button>
+          <button type="button" class="tool-btn secondary prog-play-degree-btn" id="prog-play-degree-btn" hidden><svg class="icon icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg> Play selected</button>
           <h3 class="chart-section-title">Progression</h3>
           <div class="prog-visual" id="prog-visual"></div>
         </div>
@@ -150,7 +150,7 @@
     </section>
 
     <section id="screen-tool-chord-structure" class="screen screen-tool">
-      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <button type="button" class="back-btn back-btn-floating" data-back="tools"><svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> Tools</button>
       <div class="tool-page-header tool-page-header-inset">
         <h2>Chord Structures</h2>
         <p>From basic triads to lush 13ths — tap to hear each shape on the piano.</p>
@@ -177,7 +177,7 @@
     </section>
 
     <section id="screen-tool-nashville" class="screen screen-tool">
-      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <button type="button" class="back-btn back-btn-floating" data-back="tools"><svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> Tools</button>
       <div class="tool-page-header tool-page-header-inset">
         <h2>Nashville Number Practice</h2>
         <p>Find chord degrees in any key — grid or piano.</p>
@@ -199,7 +199,7 @@
     </section>
 
     <section id="screen-tool-bpm" class="screen screen-tool">
-      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <button type="button" class="back-btn back-btn-floating" data-back="tools"><svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> Tools</button>
       <div class="tool-page-header tool-page-header-inset">
         <h2>BPM Metronome</h2>
         <p>Big tempo in the center — options on the left, tips on the right.</p>
@@ -208,8 +208,8 @@
         <aside class="bpm-controls-panel" aria-label="Metronome options">
           <h3 class="bpm-panel-title">Options</h3>
           <div class="bpm-transport">
-            <button type="button" class="tool-btn primary bpm-transport-btn" id="bpm-start-btn">▶ Start</button>
-            <button type="button" class="tool-btn secondary bpm-transport-btn" id="bpm-stop-btn">■ Stop</button>
+            <button type="button" class="tool-btn primary bpm-transport-btn" id="bpm-start-btn"><svg class="icon icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg> Start</button>
+            <button type="button" class="tool-btn secondary bpm-transport-btn" id="bpm-stop-btn"><svg class="icon icon-square" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/></svg> Stop</button>
           </div>
           <div class="bpm-control-block bpm-control-block-tempo">
             <span class="bpm-control-label">Tempo</span>
@@ -261,7 +261,7 @@
     </section>
 
     <section id="screen-tool-modes" class="screen screen-tool">
-      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <button type="button" class="back-btn back-btn-floating" data-back="tools"><svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> Tools</button>
       <div class="tool-page-header tool-page-header-inset">
         <h2>Modal Scales</h2>
         <p>Dorian, Lydian, Phrygian &amp; more — hear how each mode colors the same root.</p>
@@ -272,7 +272,7 @@
             <label>Root
               <select class="tool-select" id="modes-root-select"></select>
             </label>
-            <button type="button" class="tool-btn primary" id="modes-play-scale-btn">▶ Play scale</button>
+            <button type="button" class="tool-btn primary" id="modes-play-scale-btn"><svg class="icon icon-play" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg> Play scale</button>
           </div>
           <div class="modes-degree-ref-panel">
             <h3 class="chart-section-title" id="modes-degree-title">Degrees 1–7</h3>
@@ -286,7 +286,7 @@
     </section>
 
     <section id="screen-tool-timesig" class="screen screen-tool">
-      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <button type="button" class="back-btn back-btn-floating" data-back="tools"><svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> Tools</button>
       <div class="tool-page-header tool-page-header-inset">
         <h2>Time Signatures</h2>
         <p>Common, compound &amp; odd meters — explanations plus a pattern metronome.</p>
@@ -313,7 +313,7 @@
     </section>
 
     <section id="screen-tool-intervals" class="screen screen-tool">
-      <button type="button" class="back-btn back-btn-floating" data-back="tools">← Tools</button>
+      <button type="button" class="back-btn back-btn-floating" data-back="tools"><svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> Tools</button>
       <div class="tool-page-header tool-page-header-inset">
         <h2>Intervals</h2>
         <p>Distance between two notes — hear each interval from any root.</p>
@@ -332,7 +332,7 @@
     </section>
 
     <section id="screen-game" class="screen center-area">
-      <button type="button" class="back-btn back-btn-floating" id="back-to-menu">← Modes</button>
+      <button type="button" class="back-btn back-btn-floating" id="back-to-menu"><svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> Modes</button>
       <div class="challenge-panel" id="challenge-panel">
         <p class="instruction" id="instruction">Ready?</p>
         <p class="sub-instruction" id="sub-instruction"></p>
@@ -344,7 +344,7 @@
     </section>
 
     <section id="screen-tutorial" class="screen screen-tutorial center-area">
-      <button type="button" class="back-btn back-btn-floating" id="back-from-tutorial">← Academy</button>
+      <button type="button" class="back-btn back-btn-floating" id="back-from-tutorial"><svg class="icon icon-chevron-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg> Academy</button>
       <div class="tutorial-header">
         <div class="tutorial-progress-wrap">
           <div class="tutorial-progress-bar">
@@ -368,7 +368,7 @@
     <div class="sound-settings-header">
       <h2 id="sound-settings-title">Sound</h2>
       <p class="sound-settings-sub">Choose an instrument for the piano and all playback in the app.</p>
-      <button type="button" class="sound-settings-close" id="sound-settings-close" aria-label="Close">✕</button>
+      <button type="button" class="sound-settings-close" id="sound-settings-close" aria-label="Close"><svg class="icon icon-x" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
     </div>
     <div class="sound-settings-body"></div>
   </div>
@@ -382,6 +382,7 @@
     </div>
   </div>
 
+  <script src="js/icons.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/instruments.js"></script>
   <script src="js/html5-audio.js"></script>

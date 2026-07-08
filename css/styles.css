@@ -49,8 +49,12 @@
   --bubble-text: #ffffff;
   --piano-height: clamp(100px, 18vh, 140px);
   --top-bar-height: 3.1rem;
-  --floating-back-top: calc(var(--top-bar-height) + 0.35rem);
   --piano-offset: 0px;
+  /* Bento-box radius scale: bigger cells get bigger corners, controls stay tighter */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
 }
 
 [data-theme="dark"] {
@@ -237,15 +241,21 @@ body.piano-hidden {
 .top-stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.65rem 1.1rem;
+  gap: 0.5rem;
   align-items: center;
 }
 
 .stat-pill {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  gap: 0.1rem;
   min-width: 3.5rem;
+  padding: 0.3rem 0.65rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
 }
 
 .stat-pill.wide {
@@ -271,7 +281,9 @@ body.piano-hidden {
 }
 
 .streak-flame {
-  display: inline-block;
+  display: inline-flex;
+  vertical-align: -3px;
+  color: var(--gold);
   animation: flamePulse 1.2s ease-in-out infinite;
 }
 
@@ -295,7 +307,7 @@ body.piano-hidden {
 
 .app-main:has(.screen-tool.active) {
   max-width: min(100%, 1180px);
-  padding: 0 0.5rem;
+  padding: 0 0.75rem;
 }
 
 .center-area {
@@ -375,9 +387,11 @@ body.piano-hidden {
 }
 
 .mode-card {
+  display: flex;
+  flex-direction: column;
   background: var(--bg-panel);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
   padding: 1.1rem 1rem;
   cursor: pointer;
   touch-action: manipulation;
@@ -414,8 +428,15 @@ body.piano-hidden {
 }
 
 .mode-card .mode-icon {
-  font-size: 1.75rem;
-  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.6rem;
+  color: var(--accent-strong);
+}
+
+.mode-card .mode-icon svg {
+  width: 26px;
+  height: 26px;
 }
 
 .mode-card h3 {
@@ -429,6 +450,7 @@ body.piano-hidden {
   font-size: 0.75rem;
   color: var(--text-dim);
   line-height: 1.35;
+  margin-bottom: 0.5rem;
 }
 
 .mode-badge {
@@ -439,7 +461,8 @@ body.piano-hidden {
   letter-spacing: 0.06em;
   padding: 0.2rem 0.45rem;
   border-radius: 4px;
-  margin-top: 0.5rem;
+  margin-top: auto;
+  align-self: flex-start;
 }
 
 .mode-badge.beginner { background: var(--success-soft); color: var(--success); }
@@ -469,16 +492,20 @@ body.piano-hidden {
 }
 
 .back-btn-floating {
-  position: fixed;
-  top: var(--floating-back-top);
-  left: 0.5rem;
+  position: sticky;
+  top: 0.5rem;
+  align-self: flex-start;
+  flex-shrink: 0;
   z-index: 200;
-  margin: 0;
+  margin: 0 0 1.5rem;
   padding: 0.4rem 0.75rem;
   font-size: 0.78rem;
   border-radius: 999px;
   backdrop-filter: blur(8px);
   background: var(--top-bar-bg);
+  align-items: center;
+  justify-items: center;
+  display: flex;
 }
 
 #screen-game.active,
@@ -495,17 +522,11 @@ body.piano-hidden {
   margin-top: 0.15rem;
 }
 
-.screen-tool .tool-page-header-inset,
-.screen-tutorial .tutorial-header {
-  padding-left: 5.5rem;
-}
-
-@media (max-width: 768px) {
+@media (max-width: 899px) {
   :root,
   [data-theme="light"],
   [data-theme="dark"] {
-    --top-bar-height: 5.75rem;
-    --floating-back-top: 6.15rem;
+    --top-bar-height: 6.2rem;
   }
 }
 
@@ -513,11 +534,6 @@ body.piano-hidden {
   .back-btn-floating {
     padding: 0.35rem 0.55rem;
     font-size: 0.72rem;
-  }
-  .screen-tool .tool-page-header-inset,
-  .screen-tutorial .tutorial-header {
-    padding-left: 0.65rem;
-    padding-top: 1.85rem;
   }
 }
 
@@ -529,7 +545,7 @@ body.piano-hidden {
   padding: 1.5rem 1.25rem;
   background: var(--bg-panel);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   transition: border-color 0.3s, box-shadow 0.3s;
   color: var(--text);
@@ -975,8 +991,46 @@ body.piano-hidden {
 
 @media (max-width: 480px) {
   .top-bar { padding: 0.65rem 0.85rem; }
-  .stat-pill { min-width: 2.8rem; }
+  .top-stats { gap: 0.35rem; }
+  .stat-pill { min-width: 2.8rem; padding: 0.25rem 0.45rem; }
   .stat-value { font-size: 0.9rem; }
   .mode-grid { grid-template-columns: 1fr; }
   .key-label { font-size: 0.55rem; }
+}
+
+/* ── Tablet / desktop: use the extra width instead of pinning content to a narrow column ── */
+@media (min-width: 900px) {
+  .app-main { max-width: 1080px; }
+  .app-main:has(.screen-tool.active) { max-width: 1180px; padding: 0 1rem; }
+
+  .screen-menu.center-area {
+    justify-content: center;
+    padding-top: 0;
+  }
+
+  .mode-intro p { max-width: 560px; }
+
+  .mode-grid {
+    max-width: 980px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.1rem;
+  }
+
+  .mode-card { padding: 1.35rem 1.2rem; }
+  .mode-card .mode-icon svg { width: 30px; height: 30px; }
+  .mode-card h3 { font-size: 1.08rem; }
+  .mode-card p { font-size: 0.8rem; }
+
+  .challenge-panel { max-width: 620px; padding: 1.85rem 1.6rem; }
+
+  .piano-wrap { max-width: 780px; }
+}
+
+@media (min-width: 1280px) {
+  .app-main { max-width: 1240px; padding: 0 1.5rem; }
+  .app-main:has(.screen-tool.active) { max-width: 1280px; padding: 0 1.5rem; }
+
+  .mode-grid { max-width: 1140px; }
+
+  .piano-wrap { max-width: 900px; }
 }

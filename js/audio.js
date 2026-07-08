@@ -375,7 +375,7 @@ const AudioEngine = (() => {
     banner.type = "button";
     banner.className = "audio-unlock-banner";
     banner.innerHTML =
-      '<span class="audio-unlock-icon" aria-hidden="true">🔊</span>' +
+      `<span class="audio-unlock-icon" aria-hidden="true">${Icons.svg("volume-2", { size: 20 })}</span>` +
       '<span class="audio-unlock-text">Tap to enable sound</span>';
 
     const help = document.createElement("button");

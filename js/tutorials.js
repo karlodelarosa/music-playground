@@ -3,15 +3,15 @@
  */
 const Academy = (() => {
   const TUTORIAL_META = {
-    bpm: { icon: "⏱️", title: "BPM & Rhythm", desc: "Tap tempo, feel the beat, master BPM.", tier: "beginner", lessons: 4 },
-    notes: { icon: "🎵", title: "Note Names", desc: "Learn every key on the piano.", tier: "beginner", lessons: 4 },
-    progressions: { icon: "🔄", title: "Chord Progressions", desc: "I–IV–V and pop's favorite moves.", tier: "beginner", lessons: 4 },
-    circle: { icon: "⭕", title: "Circle of Fifths", desc: "Explore keys that love each other.", tier: "intermediate", lessons: 4 },
-    nashville: { icon: "🔢", title: "Nashville Numbers", desc: "Chord degrees in any key — 1–7.", tier: "intermediate", lessons: 4 },
-    chordtypes: { icon: "🎹", title: "Chord Structures", desc: "Major, minor, 7th, dim, aug & more.", tier: "advanced", lessons: 4 },
-    modes: { icon: "🎭", title: "Modal Scales", desc: "Dorian, Lydian, Phrygian — color beyond major.", tier: "advanced", lessons: 4 },
-    timesignatures: { icon: "📐", title: "Time Signatures", desc: "Odd & compound meters — 5/4, 7/8, 6/8.", tier: "advanced", lessons: 4 },
-    intervals: { icon: "📏", title: "Intervals", desc: "Hear the distance between two notes.", tier: "advanced", lessons: 4 },
+    bpm: { icon: "timer", title: "BPM & Rhythm", desc: "Tap tempo, feel the beat, master BPM.", tier: "beginner", lessons: 4 },
+    notes: { icon: "music", title: "Note Names", desc: "Learn every key on the piano.", tier: "beginner", lessons: 4 },
+    progressions: { icon: "repeat", title: "Chord Progressions", desc: "I–IV–V and pop's favorite moves.", tier: "beginner", lessons: 4 },
+    circle: { icon: "circle", title: "Circle of Fifths", desc: "Explore keys that love each other.", tier: "intermediate", lessons: 4 },
+    nashville: { icon: "hash", title: "Nashville Numbers", desc: "Chord degrees in any key — 1–7.", tier: "intermediate", lessons: 4 },
+    chordtypes: { icon: "piano", title: "Chord Structures", desc: "Major, minor, 7th, dim, aug & more.", tier: "advanced", lessons: 4 },
+    modes: { icon: "drama", title: "Modal Scales", desc: "Dorian, Lydian, Phrygian — color beyond major.", tier: "advanced", lessons: 4 },
+    timesignatures: { icon: "grid-3x3", title: "Time Signatures", desc: "Odd & compound meters — 5/4, 7/8, 6/8.", tier: "advanced", lessons: 4 },
+    intervals: { icon: "ruler", title: "Intervals", desc: "Hear the distance between two notes.", tier: "advanced", lessons: 4 },
   };
 
   const CIRCLE_ORDER = ["C", "G", "D", "A", "E", "B", "Fs", "Cs", "Gs", "Ds", "As", "F"];
@@ -250,7 +250,7 @@ const Academy = (() => {
           () => {
             render(`
               <div class="tutorial-complete-badge">
-                <div class="badge-icon">⏱️</div>
+                <div class="badge-icon">${Icons.svg("timer", { size: 32 })}</div>
                 <h3>BPM Mastered!</h3>
                 <p>You can feel and count tempo. Use this in every song you learn.</p>
               </div>
@@ -341,7 +341,7 @@ const Academy = (() => {
             setTimeout(() => {
               render(`
                 <div class="tutorial-complete-badge">
-                  <div class="badge-icon">🎵</div>
+                  <div class="badge-icon">${Icons.svg("music", { size: 32 })}</div>
                   <h3>Notes Unlocked!</h3>
                   <p>The keyboard is your map. Keep exploring in Find The Note mode.</p>
                 </div>
@@ -389,7 +389,7 @@ const Academy = (() => {
           <p>The classic backbone of Western music. In <strong>C major</strong>: C → F → G → C.</p>
           <div class="prog-chain" id="prog-chain"></div>
           <div class="tutorial-actions">
-            <button type="button" class="tutorial-btn secondary" id="play-class">▶ Hear it</button>
+            <button type="button" class="tutorial-btn secondary" id="play-class">${Icons.svg("play", { size: 16 })} Hear it</button>
             <button type="button" class="tutorial-btn primary" id="p1">Continue</button>
           </div>
         `);
@@ -416,7 +416,7 @@ const Academy = (() => {
           <p><strong>I – V – vi – IV</strong> powers thousands of hits. In C: C → G → Am → F.</p>
           <div class="prog-chain" id="pop-chain"></div>
           <div class="tutorial-actions">
-            <button type="button" class="tutorial-btn secondary" id="play-pop">▶ Hear it</button>
+            <button type="button" class="tutorial-btn secondary" id="play-pop">${Icons.svg("play", { size: 16 })} Hear it</button>
             <button type="button" class="tutorial-btn primary" id="p2">Continue</button>
           </div>
         `);
@@ -468,7 +468,7 @@ const Academy = (() => {
           () => {
             render(`
               <div class="tutorial-complete-badge">
-                <div class="badge-icon">🔄</div>
+                <div class="badge-icon">${Icons.svg("repeat", { size: 32 })}</div>
                 <h3>Progressions Complete!</h3>
                 <p>Listen for I–IV–V in songs you love — you'll hear it everywhere.</p>
               </div>
@@ -578,7 +578,7 @@ const Academy = (() => {
           () => {
             render(`
               <div class="tutorial-complete-badge">
-                <div class="badge-icon">⭕</div>
+                <div class="badge-icon">${Icons.svg("circle", { size: 32 })}</div>
                 <h3>Circle Complete!</h3>
                 <p>Use the wheel when writing or transposing — it's a cheat sheet for harmony.</p>
               </div>
@@ -650,7 +650,7 @@ const Academy = (() => {
           () => {
             render(`
               <div class="tutorial-complete-badge">
-                <div class="badge-icon">🔢</div>
+                <div class="badge-icon">${Icons.svg("hash", { size: 32 })}</div>
                 <h3>Nashville Complete!</h3>
                 <p>Say "1-5-6-4" with musicians worldwide — same shapes, any key.</p>
               </div>
@@ -738,7 +738,7 @@ const Academy = (() => {
           () => {
             render(`
               <div class="tutorial-complete-badge">
-                <div class="badge-icon">🎹</div>
+                <div class="badge-icon">${Icons.svg("piano", { size: 32 })}</div>
                 <h3>Chord Structures Done!</h3>
                 <p>You're ready to build any chord in Chord Builder mode.</p>
               </div>
@@ -818,7 +818,7 @@ const Academy = (() => {
           () => {
             render(`
               <div class="tutorial-complete-badge">
-                <div class="badge-icon">🎭</div>
+                <div class="badge-icon">${Icons.svg("drama", { size: 32 })}</div>
                 <h3>Modal Scales Done!</h3>
                 <p>Open <strong>Modal Scales</strong> in Tools to explore every mode in any key.</p>
               </div>
@@ -898,7 +898,7 @@ const Academy = (() => {
             AudioEngine.stopMetronome();
             render(`
               <div class="tutorial-complete-badge">
-                <div class="badge-icon">📐</div>
+                <div class="badge-icon">${Icons.svg("grid-3x3", { size: 32 })}</div>
                 <h3>Time Signatures Done!</h3>
                 <p>Use the <strong>Time Signatures</strong> tool to practice every meter with visuals.</p>
               </div>
@@ -978,7 +978,7 @@ const Academy = (() => {
           () => {
             render(`
               <div class="tutorial-complete-badge">
-                <div class="badge-icon">📏</div>
+                <div class="badge-icon">${Icons.svg("ruler", { size: 32 })}</div>
                 <h3>Intervals Done!</h3>
                 <p>Train every interval in the <strong>Intervals</strong> tool under Tools.</p>
               </div>

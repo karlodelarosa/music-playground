@@ -97,7 +97,7 @@ const SoundSettings = (() => {
       html += `<div class="sound-settings-group"><h4>${cat}</h4><div class="sound-options-grid">`;
       byCat[cat].forEach((p) => {
         html += `<button type="button" class="sound-option" data-instrument="${p.id}" aria-pressed="false">
-          <span class="sound-option-icon">${p.icon}</span>
+          <span class="sound-option-icon">${Icons.svg(p.icon, { size: 22 })}</span>
           <span class="sound-option-name">${p.name}</span>
           <span class="sound-option-desc">${p.desc}</span>
         </button>`;

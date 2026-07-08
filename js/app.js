@@ -3,11 +3,11 @@
  */
 (function () {
   const MODE_META = {
-    find: { icon: "🎯", title: "Find The Note", desc: "See a note name, hit the right key.", tier: "beginner" },
-    echo: { icon: "🔊", title: "Echo Mode", desc: "Listen, then replay growing sequences.", tier: "beginner" },
-    memory: { icon: "🧠", title: "Memory Mode", desc: "Memorize a sequence, then play it back.", tier: "intermediate" },
-    chord: { icon: "🎼", title: "Chord Builder", desc: "Build major and minor chords.", tier: "intermediate" },
-    ear: { icon: "👂", title: "Ear Training", desc: "Hear a note, identify it by ear.", tier: "advanced" },
+    find: { icon: "target", title: "Find The Note", desc: "See a note name, hit the right key.", tier: "beginner" },
+    echo: { icon: "volume-2", title: "Echo Mode", desc: "Listen, then replay growing sequences.", tier: "beginner" },
+    memory: { icon: "brain", title: "Memory Mode", desc: "Memorize a sequence, then play it back.", tier: "intermediate" },
+    chord: { icon: "music-4", title: "Chord Builder", desc: "Build major and minor chords.", tier: "intermediate" },
+    ear: { icon: "ear", title: "Ear Training", desc: "Hear a note, identify it by ear.", tier: "advanced" },
   };
 
   const MODE_NAMES = {
@@ -205,7 +205,7 @@
     els.xp.textContent = progress.xp;
     els.level.textContent = progress.level;
     els.streak.innerHTML = progress.streak > 0
-      ? `<span class="streak-flame">🔥</span> ${progress.streak}`
+      ? `<span class="streak-flame">${Icons.svg("flame", { size: 16 })}</span> ${progress.streak}`
       : "0";
     els.highScore.textContent = progress.highScore;
   }
@@ -221,7 +221,7 @@
       const unlockXp = Storage.UNLOCK_XP[id];
       const lockText = unlockXp ? `Unlock at ${unlockXp} XP` : "Locked";
       card.innerHTML = `
-        <div class="mode-icon">${meta.icon}</div>
+        <div class="mode-icon">${Icons.svg(meta.icon, { size: 28 })}</div>
         <h3>${meta.title}</h3>
         <p>${meta.desc}</p>
         <span class="mode-badge ${unlocked ? meta.tier : "locked"}">${unlocked ? meta.tier : lockText}</span>
@@ -243,9 +243,9 @@
       const unlockXp = Storage.TUTORIAL_UNLOCK_XP[id];
       const lockText = unlockXp ? `Unlock at ${unlockXp} XP` : "Locked";
       const badge = done ? "completed" : unlocked ? meta.tier : "locked";
-      const badgeText = done ? "Completed ✓" : unlocked ? `${meta.lessons} lessons` : lockText;
+      const badgeText = done ? `Completed ${Icons.svg("check", { size: 14 })}` : unlocked ? `${meta.lessons} lessons` : lockText;
       card.innerHTML = `
-        <div class="mode-icon">${meta.icon}</div>
+        <div class="mode-icon">${Icons.svg(meta.icon, { size: 28 })}</div>
         <h3>${meta.title}</h3>
         <p>${meta.desc}</p>
         <span class="mode-badge ${badge}">${badgeText}</span>
@@ -293,7 +293,7 @@
       card.type = "button";
       card.className = "mode-card";
       card.innerHTML = `
-        <div class="mode-icon">${meta.icon}</div>
+        <div class="mode-icon">${Icons.svg(meta.icon, { size: 28 })}</div>
         <h3>${meta.title}</h3>
         <p>${meta.desc}</p>
         <span class="mode-badge ${meta.tier || "beginner"}">Open</span>

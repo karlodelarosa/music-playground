@@ -53,7 +53,7 @@
   flex-direction: column;
   background: var(--bg-panel-solid);
   border: 1px solid var(--border-strong);
-  border-radius: 18px;
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   pointer-events: auto;
@@ -165,7 +165,7 @@
   align-items: flex-start;
   gap: 0.15rem;
   padding: 0.65rem 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 2px solid var(--border);
   background: var(--btn-secondary-bg);
   cursor: pointer;

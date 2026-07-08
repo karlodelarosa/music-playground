@@ -1,15 +1,15 @@
 /**
- * Light / dark theme — default is light.
+ * Light / dark theme — default is dark.
  */
 const Theme = (() => {
   const KEY = "musicQuest_theme";
 
   function get() {
-    return localStorage.getItem(KEY) === "dark" ? "dark" : "light";
+    return localStorage.getItem(KEY) === "light" ? "light" : "dark";
   }
 
   function apply(theme) {
-    const next = theme === "dark" ? "dark" : "light";
+    const next = theme === "light" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
     localStorage.setItem(KEY, next);
     syncToggle(next);
@@ -26,9 +26,8 @@ const Theme = (() => {
     btn.setAttribute("aria-pressed", isDark ? "true" : "false");
     btn.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
     btn.title = isDark ? "Light mode" : "Dark mode";
-    btn.innerHTML = isDark
-      ? '<span class="theme-icon" aria-hidden="true">☀️</span><span class="theme-label">Light</span>'
-      : '<span class="theme-icon" aria-hidden="true">🌙</span><span class="theme-label">Dark</span>';
+    const icon = Icons.svg(isDark ? "sun" : "moon", { size: 18 });
+    btn.innerHTML = `<span class="theme-icon" aria-hidden="true">${icon}</span><span class="theme-label">${isDark ? "Light" : "Dark"}</span>`;
   }
 
   function init() {

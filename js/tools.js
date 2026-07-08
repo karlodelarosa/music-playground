@@ -3,14 +3,14 @@
  */
 const Tools = (() => {
   const TOOL_META = {
-    circle: { icon: "⭕", title: "Circle of Fifths", desc: "Explore keys — tap for full details.", tier: "beginner" },
-    progressions: { icon: "🔄", title: "Chord Progressions", desc: "Full 1–7 chart per key + classic progressions.", tier: "beginner" },
-    chordstructure: { icon: "🎹", title: "Chord Structures", desc: "Major → 9ths → 11ths → 13ths — hear each type.", tier: "intermediate" },
-    nashville: { icon: "🔢", title: "Nashville Practice", desc: "Train chord degrees in any key.", tier: "intermediate" },
-    bpm: { icon: "⏱️", title: "BPM Metronome", desc: "Set tempo — tap, slider, single or double.", tier: "beginner" },
-    modes: { icon: "🎭", title: "Modal Scales", desc: "Dorian, Lydian, Phrygian & all 7 modes.", tier: "advanced" },
-    timesig: { icon: "📐", title: "Time Signatures", desc: "4/4 to 7/8 — odd meters with pattern clicks.", tier: "advanced" },
-    intervals: { icon: "📏", title: "Intervals", desc: "Minor 3rd to tritone — hear the distance.", tier: "advanced" },
+    circle: { icon: "circle", title: "Circle of Fifths", desc: "Explore keys — tap for full details.", tier: "beginner" },
+    progressions: { icon: "repeat", title: "Chord Progressions", desc: "Full 1–7 chart per key + classic progressions.", tier: "beginner" },
+    chordstructure: { icon: "piano", title: "Chord Structures", desc: "Major → 9ths → 11ths → 13ths — hear each type.", tier: "intermediate" },
+    nashville: { icon: "hash", title: "Nashville Practice", desc: "Train chord degrees in any key.", tier: "intermediate" },
+    bpm: { icon: "timer", title: "BPM Metronome", desc: "Set tempo — tap, slider, single or double.", tier: "beginner" },
+    modes: { icon: "drama", title: "Modal Scales", desc: "Dorian, Lydian, Phrygian & all 7 modes.", tier: "advanced" },
+    timesig: { icon: "grid-3x3", title: "Time Signatures", desc: "4/4 to 7/8 — odd meters with pattern clicks.", tier: "advanced" },
+    intervals: { icon: "ruler", title: "Intervals", desc: "Minor 3rd to tritone — hear the distance.", tier: "advanced" },
   };
 
   let activeTool = null;
@@ -113,7 +113,7 @@ const Tools = (() => {
       <div class="detail-row"><div class="detail-label">Degree</div><div class="detail-value accent">${ch.num}</div></div>
       <div class="detail-row"><div class="detail-label">Quality</div><div class="detail-value">${ch.qualityLabel || MusicTheory.qualityLabel(ch.quality)}</div></div>
       <div class="detail-row"><div class="detail-label">Notes</div><div class="detail-value">${ch.notes.map((n) => MusicTheory.DISPLAY[n]).join(" · ")}</div></div>
-      <div class="detail-row"><div class="detail-label">Tip</div><div class="detail-value">Tap another number to compare. Hold <kbd>Shift</kbd> to add degrees to a custom sequence.</div>`;
+      <div class="detail-row"><div class="detail-label">Tip</div><div class="detail-value">Tap another number to compare. Hold <kbd>Shift</kbd> to add degrees to a custom sequence.</div></div>`;
   }
 
   function playDegreeChord(ch) {
@@ -165,10 +165,11 @@ const Tools = (() => {
         btn.setAttribute("aria-pressed", selectedSet.has(num) ? "true" : "false");
       });
       playDegreeBtn.hidden = selectedDegrees.length === 0;
-      playDegreeBtn.textContent =
-        selectedDegrees.length > 1
-          ? `▶ Play ${selectedDegrees.length} selected`
-          : "▶ Play selected";
+      playDegreeBtn.innerHTML =
+        Icons.svg("play", { size: 16 }) +
+        (selectedDegrees.length > 1
+          ? ` Play ${selectedDegrees.length} selected`
+          : " Play selected");
     }
 
     function selectDegree(num, allChords, keyInfo, options = {}) {
